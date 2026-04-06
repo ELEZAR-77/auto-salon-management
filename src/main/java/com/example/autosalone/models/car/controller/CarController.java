@@ -3,6 +3,7 @@ package com.example.autosalone.models.car.controller;
 import com.example.autosalone.models.car.converters.CarDtoConverter;
 import com.example.autosalone.models.car.dto.CarDto;
 import com.example.autosalone.models.car.dto.CarSearchFilterDto;
+import com.example.autosalone.models.car.dto.CarUpdateRequestDto;
 import com.example.autosalone.models.car.dto.CreateCarRequest;
 import com.example.autosalone.models.car.service.CarService;
 import jakarta.validation.Valid;
@@ -64,7 +65,29 @@ public class CarController {
                 );
     }
 
-    public ResponseEntity<CarDto> updateCarById() {
+    @PutMapping("/{id}")
+    public ResponseEntity<CarDto> updateCarById(
+            @PathVariable Long id,
+            @RequestBody CarUpdateRequestDto  updateRequest
+    ) {
+        log.info("Updating car {}", id);
 
+        return ResponseEntity
+                .ok(carDtoConverter.toDto(
+                        carService.updateCar(id, updateRequest)
+                ));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCarById(
+            @PathVariable Long id
+    ) {
+        log.info("Deleting car {}", id);
+
+        carService.deleteCarById(id);
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }

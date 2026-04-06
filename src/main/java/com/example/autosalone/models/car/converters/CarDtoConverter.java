@@ -4,7 +4,11 @@ import com.example.autosalone.models.car.Car;
 import com.example.autosalone.models.car.CarStatus;
 import com.example.autosalone.models.car.dto.CarDto;
 import com.example.autosalone.models.car.dto.CreateCarRequest;
+import com.example.autosalone.models.deal.converters.DealDtoConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 
 @Component
 public class CarDtoConverter {
@@ -14,17 +18,9 @@ public class CarDtoConverter {
                 car.id(),
                 car.brand(),
                 car.model(),
+                car.color(),
+                car.year(),
                 car.price()
-        );
-    }
-
-    public Car toDomain(CarDto carDto) {
-        return new Car(
-                carDto.id(),
-                carDto.brand(),
-                carDto.model(),
-                carDto.price(),
-                null
         );
     }
 
@@ -33,6 +29,8 @@ public class CarDtoConverter {
                 null,
                 carRequest.brand(),
                 carRequest.model(),
+                carRequest.color(),
+                carRequest.year(),
                 carRequest.price(),
                 CarStatus.AVAILABLE
         );

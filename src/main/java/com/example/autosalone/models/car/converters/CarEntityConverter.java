@@ -6,6 +6,8 @@ import com.example.autosalone.models.car.CarStatus;
 import com.example.autosalone.models.car.dto.CarDto;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class CarEntityConverter {
 
@@ -15,6 +17,8 @@ public class CarEntityConverter {
                 car.brand(),
                 car.model(),
                 car.price(),
+                car.color(),
+                car.year(),
                 car.status().name()
         );
     }
@@ -24,6 +28,8 @@ public class CarEntityConverter {
                 carEntity.getId(),
                 carEntity.getBrand(),
                 carEntity.getModel(),
+                carEntity.getColor(),
+                carEntity.getYear(),
                 carEntity.getPrice(),
                 CarStatus.valueOf(carEntity.getStatus())
         );
