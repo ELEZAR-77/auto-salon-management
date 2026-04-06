@@ -23,5 +23,7 @@ public class CarEntity {
     private BigDecimal price;
     private String color;
     private Integer year;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private CarStatus status;
 }

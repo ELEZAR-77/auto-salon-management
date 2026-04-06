@@ -19,7 +19,7 @@ public class CarEntityConverter {
                 car.price(),
                 car.color(),
                 car.year(),
-                car.status().name()
+                car.status()
         );
     }
 
@@ -31,7 +31,7 @@ public class CarEntityConverter {
                 carEntity.getColor(),
                 carEntity.getYear(),
                 carEntity.getPrice(),
-                CarStatus.valueOf(carEntity.getStatus())
+                carEntity.getStatus()
         );
     }
 }

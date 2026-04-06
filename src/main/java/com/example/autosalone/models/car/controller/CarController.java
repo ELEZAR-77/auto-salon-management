@@ -27,7 +27,7 @@ public class CarController {
 
     @PostMapping
     public ResponseEntity<CarDto> createCar(
-            @RequestBody CreateCarRequest request
+            @Valid @RequestBody CreateCarRequest request
     ) {
         log.info("Creating car {}", request);
 
