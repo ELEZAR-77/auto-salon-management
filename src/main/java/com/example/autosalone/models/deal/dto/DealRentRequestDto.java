@@ -1,0 +1,6 @@
+package com.example.autosalone.models.deal.dto;
+
+public record DealRentRequestDto(
+    Long carId
+) {
+}
