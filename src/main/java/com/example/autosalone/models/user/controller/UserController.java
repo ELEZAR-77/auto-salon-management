@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class UserController {
     private final UserDtoConverter userDtoConverter;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDto> createUser(
              @Valid @RequestBody UserRegisterRequestDto userRequest
     ) {
@@ -40,6 +42,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         log.info("Get request for getAllUsers");
 
@@ -51,6 +54,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UserUpdateRequestDto updateRequest
@@ -66,6 +70,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteUserById(
             @PathVariable Long id
     ) {

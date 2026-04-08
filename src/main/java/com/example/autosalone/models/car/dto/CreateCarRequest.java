@@ -6,19 +6,24 @@ import java.math.BigDecimal;
 
 public record CreateCarRequest(
 
-        @Min(3) @Max(100) @NotBlank
+        @Size(min = 3, max = 100)
+        @NotBlank
         String brand,
 
-        @Min(3) @Max(100) @NotBlank
+        @Size(min = 3, max = 100)
+        @NotBlank
         String model,
 
-        @Min(3) @Max(100) @NotBlank
+        @Size(min = 3, max = 100)
+        @NotBlank
         String color,
 
-        @Min(1885) @NotNull
+        @Min(1885)
+        @NotNull
         Integer year,
 
-        @Positive @NotNull
+        @Positive
+        @NotNull
         BigDecimal price
 ) {
 }

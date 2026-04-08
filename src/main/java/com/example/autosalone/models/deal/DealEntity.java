@@ -21,11 +21,11 @@ public class DealEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "car_Id")
     CarEntity car;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "user_Id")
     UserEntity user;
 
     @Enumerated(EnumType.STRING)

@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,9 +27,18 @@ public class CarController {
     private final CarService carService;
     private final CarDtoConverter carDtoConverter;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/debug")
+    public void debug(Authentication auth) {
+        auth.getAuthorities().forEach(a -> {
+            System.out.println(a.getAuthority());
+        });
+    }
+
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CarDto> createCar(
-            @Valid @RequestBody CreateCarRequest request
+            @RequestBody CreateCarRequest request
     ) {
         log.info("Creating car {}", request);
 
@@ -41,6 +52,7 @@ public class CarController {
     }
 
     @GetMapping("/{model}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CarDto> getCarByModel(
             @PathVariable String model
     ) {
@@ -51,6 +63,7 @@ public class CarController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<CarDto>> searchCars(
             @Valid CarSearchFilterDto carSearchFilterDto
     ) {
@@ -66,6 +79,7 @@ public class CarController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CarDto> updateCarById(
             @PathVariable Long id,
             @RequestBody CarUpdateRequestDto  updateRequest
@@ -79,6 +93,7 @@ public class CarController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteCarById(
             @PathVariable Long id
     ) {
