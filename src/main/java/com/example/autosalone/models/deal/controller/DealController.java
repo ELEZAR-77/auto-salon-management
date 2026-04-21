@@ -4,6 +4,7 @@ import com.example.autosalone.models.deal.converters.DealDtoConverter;
 import com.example.autosalone.models.deal.dto.DealDto;
 import com.example.autosalone.models.deal.dto.DealEmployerDealsDto;
 import com.example.autosalone.models.deal.dto.DealRentRequestDto;
+import com.example.autosalone.models.deal.dto.DealRentUpdateDto;
 import com.example.autosalone.models.deal.serivce.DealService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class DealController {
                 .status(HttpStatus.CREATED)
                 .body(dealDtoConverter.toDto(
                         dealService.rentDeal(
-                                requestDto.carId(),
+                                requestDto,
                                 employee
                         )
                     )
@@ -60,11 +61,39 @@ public class DealController {
 
     @GetMapping
     public ResponseEntity<List<DealEmployerDealsDto>> getEmployerDeals(
-            @AuthenticationPrincipal UserDetails employee
+            @AuthenticationPrincipal UserDetails user
     ) {
         log.info("Get employer deal request");
 
         return ResponseEntity
-                .ok(dealService.getEmployerDeals(employee));
+                .ok(dealService.getEmployerDeals(user));
+    }
+
+    @PutMapping("/rent-update/{id}")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<DealDto> extendRentalDeal(
+            @PathVariable Long id,
+            @RequestBody DealRentUpdateDto requestDto
+    ) {
+        log.info("Get update rent request");
+
+        return ResponseEntity
+                .ok(
+                        dealDtoConverter.toDto(
+                                dealService.extendRentalDeal(id, requestDto)
+                        )
+                );
+    }
+
+    @DeleteMapping("rent-delete/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> deleteDeal(@PathVariable Long id) {
+        log.info("Delete deal request");
+
+        dealService.deleteDealById(id);
+
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

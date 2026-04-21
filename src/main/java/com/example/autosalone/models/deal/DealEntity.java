@@ -1,6 +1,7 @@
 package com.example.autosalone.models.deal;
 
 import com.example.autosalone.models.car.CarEntity;
+import com.example.autosalone.models.deal.enums.DealStatus;
 import com.example.autosalone.models.deal.enums.DealType;
 import com.example.autosalone.models.user.UserEntity;
 import jakarta.persistence.*;
@@ -30,5 +31,13 @@ public class DealEntity {
 
     @Enumerated(EnumType.STRING)
     private DealType dealType;
+
     private LocalDate date;
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
+
+    @Enumerated(EnumType.STRING)
+    private DealStatus dealStatus;
 }

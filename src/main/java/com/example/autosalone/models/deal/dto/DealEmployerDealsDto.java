@@ -1,8 +1,5 @@
 package com.example.autosalone.models.deal.dto;
 
-import com.example.autosalone.models.car.Car;
-import com.example.autosalone.models.car.CarStatus;
-import com.example.autosalone.models.car.dto.CarDto;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.math.BigDecimal;
@@ -10,6 +7,11 @@ import java.time.LocalDate;
 
 @JsonPropertyOrder({
         "dealId",
+        "dealType",
+        "dealStatus",
+        "dealDate",
+        "dealStartDate",
+        "dealEndDate",
         "userId",
         "carId",
         "brand",
@@ -21,6 +23,12 @@ import java.time.LocalDate;
 })
 public interface DealEmployerDealsDto {
     Long getDealId();
+    String getDealType();
+    String getDealStatus();
+    LocalDate getDealDate();
+    LocalDate getStartDate();
+    LocalDate getDealEndDate();
+
     Long getUserId();
 
     Long getCarId();
