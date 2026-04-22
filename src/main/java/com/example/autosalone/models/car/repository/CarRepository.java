@@ -22,7 +22,7 @@ public interface CarRepository extends JpaRepository<CarEntity, Long> {
     SELECT c from CarEntity c
         WHERE (:brand IS NULL OR c.brand = :brand)
         AND (:model IS NULL OR c.model = :model)
-        AND (:maxPrice IS NULL OR c.price <= :maxPrice)
+        AND (:maxPrice IS NULL OR c.salePrice <= :maxPrice)
     """)
     List<CarEntity> searchCars(
             String brand,

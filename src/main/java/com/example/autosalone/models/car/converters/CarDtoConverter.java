@@ -20,7 +20,8 @@ public class CarDtoConverter {
                 car.model(),
                 car.color(),
                 car.year(),
-                car.price()
+                car.salePrice(),
+                car.rentPricePerDay()
         );
     }
 
@@ -31,7 +32,8 @@ public class CarDtoConverter {
                 carRequest.model(),
                 carRequest.color(),
                 carRequest.year(),
-                carRequest.price(),
+                carRequest.salePrice(),
+                carRequest.rentPricePerDay(),
                 CarStatus.AVAILABLE
         );
     }

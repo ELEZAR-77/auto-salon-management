@@ -96,4 +96,16 @@ public class DealController {
                 .noContent()
                 .build();
     }
+
+    @PutMapping("/cancel-deal/{id}")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<DealDto> cancelDeal(@PathVariable Long id) {
+
+        log.info("Get cancel request");
+
+        return ResponseEntity
+                .ok(dealDtoConverter.toDto(
+                        dealService.canselDealById(id)
+                ));
+    }
 }

@@ -8,6 +8,7 @@ public record CarDto(
         String model,
         String color,
         Integer year,
-        BigDecimal price
+        BigDecimal price,
+        BigDecimal rentPricePerDay
 ) {
 }

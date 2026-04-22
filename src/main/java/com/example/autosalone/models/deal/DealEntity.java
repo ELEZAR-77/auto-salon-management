@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -39,5 +40,8 @@ public class DealEntity {
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "deal_status")
     private DealStatus dealStatus;
+
+    private BigDecimal totalPrice;
 }

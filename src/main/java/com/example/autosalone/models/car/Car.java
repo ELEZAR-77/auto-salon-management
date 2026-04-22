@@ -11,7 +11,8 @@ public record Car(
         String model,
         String color,
         Integer year,
-        BigDecimal price,
+        BigDecimal salePrice,
+        BigDecimal rentPricePerDay,
         CarStatus status
 ) {
 }

@@ -89,7 +89,7 @@ public class CarService {
             entityToUpdate.setModel(updateRequest.model());
         }
         if (updateRequest.price() != null) {
-            entityToUpdate.setPrice(updateRequest.price());
+            entityToUpdate.setSalePrice(updateRequest.price());
         }
 
         return carEntityConverter.toDomain(entityToUpdate);

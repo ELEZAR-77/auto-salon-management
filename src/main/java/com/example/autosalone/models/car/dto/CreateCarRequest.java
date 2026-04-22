@@ -24,6 +24,10 @@ public record CreateCarRequest(
 
         @Positive
         @NotNull
-        BigDecimal price
+        BigDecimal salePrice,
+
+        @Positive
+        @NotNull
+        BigDecimal rentPricePerDay
 ) {
 }

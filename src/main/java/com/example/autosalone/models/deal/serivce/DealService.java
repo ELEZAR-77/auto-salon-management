@@ -15,6 +15,8 @@ import com.example.autosalone.models.deal.dto.DealRentRequestDto;
 import com.example.autosalone.models.deal.dto.DealRentUpdateDto;
 import com.example.autosalone.models.deal.enums.DealStatus;
 import com.example.autosalone.models.deal.enums.DealType;
+import com.example.autosalone.models.deal.exceptions.CanceledDealException;
+import com.example.autosalone.models.deal.exceptions.IncorrectValueOfDealDaysException;
 import com.example.autosalone.models.deal.reopsitory.DealRepository;
 import com.example.autosalone.models.user.UserEntity;
 import com.example.autosalone.models.user.UserRole;
@@ -27,7 +29,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -65,6 +69,17 @@ public class DealService {
         dealEntity.setStartDate(request.startDate());
         dealEntity.setEndDate(request.endDate());
 
+        long days = ChronoUnit.DAYS.between(dealEntity.getStartDate(), dealEntity.getEndDate());
+
+        if (days <= 0) {
+            throw new IncorrectValueOfDealDaysException("Days must be greater than zero");
+        }
+
+        BigDecimal totalPrice = car.getRentPricePerDay()
+                .multiply(BigDecimal.valueOf(days));
+
+        dealEntity.setTotalPrice(totalPrice);
+
         return entityConverter.toDomain(
                 dealRepository.save(dealEntity)
         );
@@ -91,6 +106,7 @@ public class DealService {
         dealEntity.setDealType(DealType.SALE);
         dealEntity.setDealStatus(DealStatus.FINISHED);
         dealEntity.setDate(LocalDate.now());
+        dealEntity.setTotalPrice(car.getSalePrice());
 
         return entityConverter.toDomain(
                 dealRepository.save(dealEntity)
@@ -139,6 +155,23 @@ public class DealService {
         }
 
         dealRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Deal canselDealById(Long id) {
+        DealEntity dealToCancel =  dealRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("No deal found with id: " + id)
+        );
+
+        if (dealToCancel.getDealStatus().equals(DealStatus.CANCELLED)) {
+            throw new CanceledDealException("This deal has already been cancelled.");
+        }
+
+        dealToCancel.setEndDate(LocalDate.now());
+        dealToCancel.setDealStatus(DealStatus.CANCELLED);
+        dealToCancel.getCar().setStatus(CarStatus.AVAILABLE);
+
+        return entityConverter.toDomain(dealToCancel);
     }
 
     public void carStatusCheck(CarStatus carStatus) {

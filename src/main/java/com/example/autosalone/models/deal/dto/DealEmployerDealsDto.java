@@ -12,11 +12,13 @@ import java.time.LocalDate;
         "dealDate",
         "dealStartDate",
         "dealEndDate",
+        "dealTotalPrice",
         "userId",
         "carId",
         "brand",
         "model",
         "price",
+        "rentPricePerDay",
         "color",
         "year",
         "status"
@@ -28,6 +30,7 @@ public interface DealEmployerDealsDto {
     LocalDate getDealDate();
     LocalDate getStartDate();
     LocalDate getDealEndDate();
+    BigDecimal getDealTotalPrice();
 
     Long getUserId();
 
@@ -35,6 +38,7 @@ public interface DealEmployerDealsDto {
     String getBrand();
     String getModel();
     BigDecimal getPrice();
+    BigDecimal getRentPricePerDay();
     String getColor();
     Integer getYear();
     String getStatus();

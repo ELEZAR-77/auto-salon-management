@@ -12,7 +12,10 @@ public class DealDtoConverter {
                 deal.id(),
                 deal.carId(),
                 deal.userId(),
-                deal.date()
+                deal.date(),
+                deal.type(),
+                deal.status(),
+                deal.totalPrice()
         );
     }
 }
