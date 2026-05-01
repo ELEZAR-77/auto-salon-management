@@ -2,15 +2,11 @@ package com.example.autosalone.models.user.service;
 
 import com.example.autosalone.models.user.User;
 import com.example.autosalone.models.user.UserEntity;
-import com.example.autosalone.models.user.UserRepository;
+import com.example.autosalone.models.user.repository.UserRepository;
 import com.example.autosalone.models.user.converters.UserEntityConverter;
-import com.example.autosalone.models.user.dto.UserDto;
-import com.example.autosalone.models.user.dto.UserRegisterRequestDto;
 import com.example.autosalone.models.user.exceptions.UserAlreadyExistException;
 import com.example.autosalone.models.user.exceptions.UserNotFoundException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,10 +70,10 @@ public class UserService {
 
     @Transactional
     public void deleteUserById(Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User with id %s not found".formatted(id));
         }
 
-        throw new UserNotFoundException("User with id %s not found".formatted(id));
+        userRepository.deleteById(id);
     }
 }

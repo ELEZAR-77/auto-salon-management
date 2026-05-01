@@ -16,7 +16,8 @@ public class CarEntityConverter {
                 car.id(),
                 car.brand(),
                 car.model(),
-                car.price(),
+                car.salePrice(),
+                car.rentPricePerDay(),
                 car.color(),
                 car.year(),
                 car.status()
@@ -30,7 +31,8 @@ public class CarEntityConverter {
                 carEntity.getModel(),
                 carEntity.getColor(),
                 carEntity.getYear(),
-                carEntity.getPrice(),
+                carEntity.getSalePrice(),
+                carEntity.getRentPricePerDay(),
                 carEntity.getStatus()
         );
     }

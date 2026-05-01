@@ -27,7 +27,7 @@ public class UserDtoConverter {
                 rq.phoneNumber(),
                 rq.email(),
                 rq.password(),
-                UserRole.USER
+                UserRole.EMPLOYEE
         );
     }
 

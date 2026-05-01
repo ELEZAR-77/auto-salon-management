@@ -1,7 +1,9 @@
 package com.example.autosalone.models.deal;
 
+import com.example.autosalone.models.deal.enums.DealStatus;
 import com.example.autosalone.models.deal.enums.DealType;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record Deal(
@@ -9,6 +11,8 @@ public record Deal(
         Long carId,
         Long userId,
         DealType type,
-        LocalDate date
+        DealStatus status,
+        LocalDate date,
+        BigDecimal totalPrice
 ) {
 }

@@ -13,7 +13,9 @@ public class DealEntityConverter {
                 dealEntity.getCar().getId(),
                 dealEntity.getUser().getId(),
                 dealEntity.getDealType(),
-                dealEntity.getDate()
+                dealEntity.getDealStatus(),
+                dealEntity.getDate(),
+                dealEntity.getTotalPrice()
         );
     }
 }

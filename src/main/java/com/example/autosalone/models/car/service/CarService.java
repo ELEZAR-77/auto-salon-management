@@ -89,7 +89,7 @@ public class CarService {
             entityToUpdate.setModel(updateRequest.model());
         }
         if (updateRequest.price() != null) {
-            entityToUpdate.setPrice(updateRequest.price());
+            entityToUpdate.setSalePrice(updateRequest.price());
         }
 
         return carEntityConverter.toDomain(entityToUpdate);
@@ -102,5 +102,13 @@ public class CarService {
         );
 
         carRepository.delete(entityToDelete);
+    }
+
+    public List<Car> getAllCars() {
+
+        return carRepository.findAll()
+                .stream()
+                .map(carEntityConverter::toDomain)
+                .toList();
     }
 }
