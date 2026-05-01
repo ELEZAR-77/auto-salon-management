@@ -26,6 +26,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         return http
+                .cors(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
@@ -33,6 +34,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authorizeRequests ->
                         authorizeRequests
+                                .requestMatchers(HttpMethod.OPTIONS, "/**")
+                                    .permitAll()
                                 .requestMatchers(HttpMethod.POST, "/deals/rent")
                                     .hasAnyAuthority("EMPLOYEE")
                                 .requestMatchers(HttpMethod.POST, "/users")

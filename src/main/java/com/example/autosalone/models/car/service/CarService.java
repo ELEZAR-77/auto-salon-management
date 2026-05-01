@@ -103,4 +103,12 @@ public class CarService {
 
         carRepository.delete(entityToDelete);
     }
+
+    public List<Car> getAllCars() {
+
+        return carRepository.findAll()
+                .stream()
+                .map(carEntityConverter::toDomain)
+                .toList();
+    }
 }

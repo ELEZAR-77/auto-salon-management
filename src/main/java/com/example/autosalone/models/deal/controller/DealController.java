@@ -1,13 +1,12 @@
 package com.example.autosalone.models.deal.controller;
 
 import com.example.autosalone.models.deal.converters.DealDtoConverter;
-import com.example.autosalone.models.deal.dto.DealDto;
-import com.example.autosalone.models.deal.dto.DealEmployerDealsDto;
-import com.example.autosalone.models.deal.dto.DealRentRequestDto;
-import com.example.autosalone.models.deal.dto.DealRentUpdateDto;
+import com.example.autosalone.models.deal.dto.*;
 import com.example.autosalone.models.deal.serivce.DealService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -29,7 +29,7 @@ public class DealController {
 
     @PostMapping("/rent")
     public ResponseEntity<DealDto> rentDeal(
-            @RequestBody DealRentRequestDto requestDto,
+            @Valid @RequestBody DealRentRequestDto requestDto,
             @AuthenticationPrincipal UserDetails employee
     ) {
         log.info("Get rent request");
@@ -73,7 +73,7 @@ public class DealController {
     @PreAuthorize("hasAuthority('EMPLOYEE')")
     public ResponseEntity<DealDto> extendRentalDeal(
             @PathVariable Long id,
-            @RequestBody DealRentUpdateDto requestDto
+            @Valid @RequestBody DealRentUpdateDto requestDto
     ) {
         log.info("Get update rent request");
 
@@ -107,5 +107,23 @@ public class DealController {
                 .ok(dealDtoConverter.toDto(
                         dealService.canselDealById(id)
                 ));
+    }
+
+    @GetMapping("/stats")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<DealStatsShowDto> dealsStats(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate from,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate to
+    ) {
+
+        log.info("Get request for show stats");
+
+        return ResponseEntity
+                .ok(dealService.searchDealStats(from, to));
     }
 }

@@ -9,10 +9,7 @@ import com.example.autosalone.models.car.repository.CarRepository;
 import com.example.autosalone.models.deal.Deal;
 import com.example.autosalone.models.deal.DealEntity;
 import com.example.autosalone.models.deal.converters.DealEntityConverter;
-import com.example.autosalone.models.deal.dto.DealDto;
-import com.example.autosalone.models.deal.dto.DealEmployerDealsDto;
-import com.example.autosalone.models.deal.dto.DealRentRequestDto;
-import com.example.autosalone.models.deal.dto.DealRentUpdateDto;
+import com.example.autosalone.models.deal.dto.*;
 import com.example.autosalone.models.deal.enums.DealStatus;
 import com.example.autosalone.models.deal.enums.DealType;
 import com.example.autosalone.models.deal.exceptions.CanceledDealException;
@@ -24,7 +21,9 @@ import com.example.autosalone.models.user.exceptions.UserAccessDeniedException;
 import com.example.autosalone.models.user.exceptions.UserNotFoundException;
 import com.example.autosalone.models.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -172,6 +171,22 @@ public class DealService {
         dealToCancel.getCar().setStatus(CarStatus.AVAILABLE);
 
         return entityConverter.toDomain(dealToCancel);
+    }
+
+    public DealStatsShowDto searchDealStats(LocalDate from, LocalDate to) {
+
+        DealStatsProjection stats = dealRepository.searchDealStats(
+                from,
+                to
+        );
+
+        return new DealStatsShowDto(
+                stats.getDealCount() != null ? stats.getDealCount().intValue() : 0,
+                stats.getSaleCount() != null ? stats.getSaleCount().intValue() : 0,
+                stats.getRentCount() != null ? stats.getRentCount().intValue() : 0,
+                stats.getTotalIncome() != null ? stats.getTotalIncome() : BigDecimal.ZERO,
+                stats.getActiveRents() != null ? stats.getActiveRents().intValue() : 0
+        );
     }
 
     public void carStatusCheck(CarStatus carStatus) {

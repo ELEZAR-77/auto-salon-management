@@ -1,10 +1,17 @@
 package com.example.autosalone.models.deal.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 
 public record DealRentRequestDto(
-    Long carId,
-    LocalDate startDate,
-    LocalDate endDate
+        @NotNull
+        Long carId,
+
+        @NotNull
+        LocalDate startDate,
+
+        @NotNull
+        LocalDate endDate
 ) {
 }

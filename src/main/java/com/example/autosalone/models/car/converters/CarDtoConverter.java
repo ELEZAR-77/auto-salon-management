@@ -21,7 +21,8 @@ public class CarDtoConverter {
                 car.color(),
                 car.year(),
                 car.salePrice(),
-                car.rentPricePerDay()
+                car.rentPricePerDay(),
+                car.status()
         );
     }
 

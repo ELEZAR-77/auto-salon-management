@@ -78,6 +78,20 @@ public class CarController {
                 );
     }
 
+    @GetMapping("/get-all")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<CarDto>> getAllCars() {
+        log.info("Get request for get all cars");
+
+        return ResponseEntity
+                .ok(
+                        carService.getAllCars()
+                                .stream()
+                                .map(carDtoConverter::toDto)
+                                .toList()
+                );
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CarDto> updateCarById(

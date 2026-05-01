@@ -2,6 +2,7 @@ package com.example.autosalone.models.deal.reopsitory;
 
 import com.example.autosalone.models.deal.DealEntity;
 import com.example.autosalone.models.deal.dto.DealEmployerDealsDto;
+import com.example.autosalone.models.deal.dto.DealStatsProjection;
 import com.example.autosalone.models.deal.enums.DealStatus;
 import com.example.autosalone.models.deal.enums.DealType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -78,4 +79,20 @@ public interface DealRepository extends JpaRepository<DealEntity, Long> {
         JOIN d.car c
     """)
     List<DealEmployerDealsDto> findAllEmployersDeals();
+
+    @Query("""
+        SELECT 
+            COUNT(d) as dealCount,
+            SUM(CASE WHEN d.dealType = 'SALE' THEN 1 ELSE 0 END) as saleCount,
+            SUM(CASE WHEN d.dealType = 'RENT' THEN 1 ELSE 0 END) as rentCount,
+            SUM(d.totalPrice) as totalIncome,
+            SUM(CASE WHEN d.dealType = 'RENT' AND d.dealStatus = 'ACTIVE' THEN 1 ELSE 0 END) as activeRents
+        FROM DealEntity d
+            WHERE d.date >= coalesce(:from, d.date) 
+            AND d.date <= coalesce(:to, d.date) 
+    """)
+    DealStatsProjection searchDealStats(
+            @Param("from") LocalDate from,
+            @Param("to") LocalDate to
+    );
 }
