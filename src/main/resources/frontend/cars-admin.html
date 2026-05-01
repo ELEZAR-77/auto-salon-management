@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Auto Salone — Admin</title>
+
+    <style>
+        * { box-sizing: border-box; font-family: Inter, Arial, sans-serif; }
+
+        body {
+            margin: 0;
+            background: #0e1117;
+            color: #e5e7eb;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* ===== Sidebar ===== */
+        .sidebar {
+            width: 240px;
+            background: #121826;
+            padding: 20px;
+            border-right: 1px solid #1f2937;
+        }
+
+        .sidebar h2 {
+            margin: 0 0 20px;
+            color: #60a5fa;
+        }
+
+        .menu-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #1f2937;
+            color: #e5e7eb;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s;
+        }
+
+        .menu-btn:hover { background: #2563eb; }
+        .menu-btn.active { background: #1d4ed8; }
+        .menu-btn.danger:hover { background: #dc2626; }
+
+        /* ===== Main ===== */
+        .main {
+            flex: 1;
+            padding: 30px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        /* ===== Burger ===== */
+        .burger {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .burger-menu {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: #121826;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            width: 200px;
+            padding: 10px;
+            display: none;
+            animation: slide 0.25s ease;
+        }
+
+        .burger-menu button {
+            width: 100%;
+            background: none;
+            border: none;
+            color: #e5e7eb;
+            padding: 10px;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .burger-menu button:hover {
+            background: #1f2937;
+        }
+
+        @keyframes slide {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== Cards ===== */
+        .card {
+            background: #121826;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #1f2937;
+            max-width: 1000px;
+        }
+
+        .hidden { display: none; }
+
+        h3 { margin-top: 0; }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #0e1117;
+            color: #e5e7eb;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+        }
+
+        button.action {
+            padding: 10px 16px;
+            background: #2563eb;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+
+        button.action:hover { background: #1d4ed8; }
+        button.danger { background: #dc2626; }
+
+        /* ===== Table ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #1f2937;
+            text-align: left;
+        }
+
+        th { color: #9ca3af; }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .AVAILABLE { background: #064e3b; color: #6ee7b7; }
+        .SOLD { background: #7f1d1d; color: #fecaca; }
+        .RENTED { background: #1e3a8a; color: #bfdbfe; }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>🚗 Cars</h2>
+    <button class="menu-btn active" onclick="show('search')">🔍 Search</button>
+    <button class="menu-btn" onclick="show('create')">➕ Create</button>
+    <button class="menu-btn" onclick="show('all')">📋 All cars</button>
+    <button class="menu-btn" onclick="show('byModel')">🔎 By model</button>
+    <button class="menu-btn" onclick="show('update')">✏️ Update</button>
+    <button class="menu-btn danger" onclick="show('delete')">🗑 Delete</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- Burger -->
+    <div class="burger" onclick="toggleBurger()">☰</div>
+    <div id="burgerMenu" class="burger-menu">
+        <button>👤 Employee panel (soon)</button>
+        <button>🚪 Logout (soon)</button>
+    </div>
+
+    <!-- SEARCH -->
+    <div id="search" class="card">
+        <h3>Search cars</h3>
+        <input id="sBrand" placeholder="Brand">
+        <input id="sModel" placeholder="Model">
+        <input id="sMaxPrice" placeholder="Max price">
+        <button class="action" onclick="searchCars()">Search</button>
+        <table><tbody id="searchTable"></tbody></table>
+    </div>
+
+    <!-- CREATE -->
+    <div id="create" class="card hidden">
+        <h3>Create car</h3>
+        <input id="cBrand" placeholder="Brand">
+        <input id="cModel" placeholder="Model">
+        <input id="cColor" placeholder="Color">
+        <input id="cYear" placeholder="Year">
+        <input id="cPrice" placeholder="Price">
+        <input id="cRent" placeholder="Rent per day">
+        <button class="action" onclick="createCar()">Create</button>
+    </div>
+
+    <!-- ALL -->
+    <div id="all" class="card hidden">
+        <h3>All cars</h3>
+        <button class="action" onclick="getAllCars()">Load</button>
+        <table><tbody id="allTable"></tbody></table>
+    </div>
+
+    <!-- BY MODEL -->
+    <div id="byModel" class="card hidden">
+        <h3>Get by model</h3>
+        <input id="modelSearch" placeholder="Model">
+        <button class="action" onclick="getByModel()">Find</button>
+        <table><tbody id="modelTable"></tbody></table>
+    </div>
+
+    <!-- UPDATE -->
+    <div id="update" class="card hidden">
+        <h3>Update car</h3>
+        <input id="uId" placeholder="ID">
+        <input id="uPrice" placeholder="New price">
+        <input id="uRent" placeholder="New rent price">
+        <button class="action" onclick="updateCar()">Update</button>
+    </div>
+
+    <!-- DELETE -->
+    <div id="delete" class="card hidden">
+        <h3>Delete car</h3>
+        <input id="dId" placeholder="ID">
+        <button class="action danger" onclick="deleteCar()">Delete</button>
+    </div>
+
+</div>
+
+<script src="cars.js"></script>
+</body>
+</html>
