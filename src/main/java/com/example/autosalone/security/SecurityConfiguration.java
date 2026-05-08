@@ -1,5 +1,6 @@
 package com.example.autosalone.security;
 
+import com.example.autosalone.security.jwt.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +14,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -23,26 +27,25 @@ public class SecurityConfiguration {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+    @Autowired
+    private JwtFilter jwtFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         return http
+                .authenticationProvider(authenticationProvider())
                 .cors(Customizer.withDefaults())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers(HttpMethod.OPTIONS, "/**")
-                                    .permitAll()
-                                .requestMatchers(HttpMethod.POST, "/deals/rent")
-                                    .hasAnyAuthority("EMPLOYEE")
-                                .requestMatchers(HttpMethod.POST, "/users")
-                                    .hasAnyAuthority("ADMIN")
+                                .requestMatchers("/auth/login").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -56,10 +59,13 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationProvider  authenticationProvider() {
         var authProvider = new DaoAuthenticationProvider(userDetailsService);
-
-        authProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
-
+        authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }
