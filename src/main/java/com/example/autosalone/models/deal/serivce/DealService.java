@@ -113,7 +113,7 @@ public class DealService {
     }
 
     public List<DealEmployerDealsDto> getEmployerDeals(UserDetails user) {
-        var userEntity = userRepository.findByEmail(user.getUsername()).orElseThrow(
+        var userEntity = userRepository.findByUsername(user.getUsername()).orElseThrow(
                 () -> new UserNotFoundException("User not found: " + user.getUsername())
         );
         if (userEntity.getRole().equals(UserRole.EMPLOYEE)) {

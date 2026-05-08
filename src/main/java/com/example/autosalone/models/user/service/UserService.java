@@ -7,10 +7,13 @@ import com.example.autosalone.models.user.converters.UserEntityConverter;
 import com.example.autosalone.models.user.exceptions.UserAlreadyExistException;
 import com.example.autosalone.models.user.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -18,14 +21,20 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserEntityConverter userEntityConverter;
+    private final PasswordEncoder passwordEncoder;
 
+
+    @Transactional
     public User createUser(User userRequest) {
 
         if (userRepository.existsByUsername(userRequest.username())) {
             throw new UserAlreadyExistException("Username already exists");
         }
 
+        var hashedPassword = passwordEncoder.encode(userRequest.password());
+
         UserEntity userToCreate = userEntityConverter.toEntity(userRequest);
+        userToCreate.setPassword(hashedPassword);
 
         return userEntityConverter.toDomain(
                 userRepository.save(userToCreate)
@@ -75,5 +84,14 @@ public class UserService {
         }
 
         userRepository.deleteById(id);
+    }
+
+    public User findByLogin(String login) {
+
+        return userEntityConverter.toDomain(
+                userRepository.findByUsername(login).orElseThrow(
+                        () -> new UserNotFoundException("User with id %s not found".formatted(id))
+                )
+        );
     }
 }
