@@ -1,5 +1,20 @@
 "use strict";
 
+function authHeaders() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("You are not authenticated");
+        window.location.href = "/login.html";
+        throw new Error("No JWT token");
+    }
+
+    return {
+        "Authorization": "Bearer " + token,
+        "Content-Type": "application/json"
+    };
+}
+
 const API = "http://localhost:8080/cars";
 
 /* ===== Navigation ===== */
@@ -44,10 +59,10 @@ async function searchCars() {
 
     const url = `${API}?${params.toString()}`;
 
-    console.log("SEARCH URL:", url); // 👈 ВАЖНО ДЛЯ ДЕБАГА
+    console.log("SEARCH URL:", url);
 
     const res = await fetch(url, {
-        credentials: "include"
+        headers: authHeaders()
     });
 
     if (!res.ok) {
@@ -73,8 +88,7 @@ async function createCar() {
 
     await fetch(API, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: authHeaders(),
         body: JSON.stringify(body)
     });
 
@@ -82,15 +96,33 @@ async function createCar() {
 }
 
 async function getAllCars() {
-    const res = await fetch(`${API}/get-all`, { credentials: "include" });
+    const res = await fetch(`${API}/get-all`, {
+        headers: authHeaders()
+    });
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Backend error:", errorText);
+        alert("Failed to load cars: " + res.status);
+        return;
+    }
+
     const cars = await res.json();
+
+    if (!Array.isArray(cars)) {
+        console.error("Expected array, got:", cars);
+        alert("Backend returned invalid data");
+        return;
+    }
 
     allTable.innerHTML = "";
     cars.forEach(c => allTable.innerHTML += row(c));
 }
 
 async function getByModel() {
-    const res = await fetch(`${API}/${modelSearch.value}`, { credentials: "include" });
+    const res = await fetch(`${API}/${modelSearch.value}`, {
+        headers: authHeaders()
+    });
     const c = await res.json();
 
     modelTable.innerHTML = row(c);
@@ -99,8 +131,7 @@ async function getByModel() {
 async function updateCar() {
     await fetch(`${API}/${uId.value}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: authHeaders(),
         body: JSON.stringify({
             price: +uPrice.value,
             rentPricePerDay: +uRent.value
@@ -113,8 +144,13 @@ async function updateCar() {
 async function deleteCar() {
     await fetch(`${API}/${dId.value}`, {
         method: "DELETE",
-        credentials: "include"
+        headers: authHeaders()
     });
 
     alert("Deleted");
+}
+
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "login/login.html";
 }

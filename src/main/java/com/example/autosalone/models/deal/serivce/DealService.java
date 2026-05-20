@@ -47,7 +47,7 @@ public class DealService {
             DealRentRequestDto request,
             UserDetails employee
     ) {
-        UserEntity user = userRepository.findByEmail(employee.getUsername())
+        UserEntity user = userRepository.findByUsername(employee.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + employee.getUsername()));
 
         CarEntity car = carRepository.findById(request.carId()).orElseThrow(
@@ -90,7 +90,7 @@ public class DealService {
                 () -> new CarNotExistException("Car not found")
         );
 
-        var user = userRepository.findByEmail(employee.getUsername()).orElseThrow(
+        var user = userRepository.findByUsername(employee.getUsername()).orElseThrow(
                 () -> new UserNotFoundException("User not found: " + employee.getUsername())
         );
 
@@ -185,6 +185,8 @@ public class DealService {
                 stats.getSaleCount() != null ? stats.getSaleCount().intValue() : 0,
                 stats.getRentCount() != null ? stats.getRentCount().intValue() : 0,
                 stats.getTotalIncome() != null ? stats.getTotalIncome() : BigDecimal.ZERO,
+                stats.getSaleCount() != null ? stats.getSaleIncome() : BigDecimal.ZERO,
+                stats.getRentIncome() != null ? stats.getRentIncome() : BigDecimal.ZERO,
                 stats.getActiveRents() != null ? stats.getActiveRents().intValue() : 0
         );
     }

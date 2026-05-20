@@ -7,6 +7,8 @@ public record DealStatsShowDto (
         Integer saleCount,
         Integer rentCount,
         BigDecimal totalIncome,
+        BigDecimal saleIncome,
+        BigDecimal rentIncome,
         Integer activeRents
 ) {
 }

@@ -28,6 +28,12 @@ public class SecurityConfiguration {
     private CustomUserDetailsService userDetailsService;
 
     @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    @Autowired
     private JwtFilter jwtFilter;
 
     @Bean
@@ -44,6 +50,11 @@ public class SecurityConfiguration {
                         authorizeRequests
                                 .requestMatchers("/auth/login").permitAll()
                                 .anyRequest().authenticated()
+                )
+                .exceptionHandling(exception ->
+                        exception
+                                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

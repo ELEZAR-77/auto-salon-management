@@ -16,7 +16,8 @@ public class UserDtoConverter {
                 user.id(),
                 user.username(),
                 user.phoneNumber(),
-                user.email()
+                user.email(),
+                user.role()
         );
     }
 

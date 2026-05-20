@@ -7,5 +7,7 @@ public interface DealStatsProjection {
     Long getSaleCount();
     Long getRentCount();
     BigDecimal getTotalIncome();
+    BigDecimal getSaleIncome();
+    BigDecimal getRentIncome();
     Long getActiveRents();
 }

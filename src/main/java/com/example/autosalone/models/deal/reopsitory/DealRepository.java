@@ -46,7 +46,7 @@ public interface DealRepository extends JpaRepository<DealEntity, Long> {
     SELECT d from DealEntity d
         WHERE d.dealType = :type
             AND d.dealStatus = :status
-                AND d.endDate < :toDay
+                AND d.endDate >= :toDay
     """)
     List<DealEntity> findAllActiveRentsBefore(
             @Param("type") DealType type,
@@ -86,6 +86,8 @@ public interface DealRepository extends JpaRepository<DealEntity, Long> {
             SUM(CASE WHEN d.dealType = 'SALE' THEN 1 ELSE 0 END) as saleCount,
             SUM(CASE WHEN d.dealType = 'RENT' THEN 1 ELSE 0 END) as rentCount,
             SUM(d.totalPrice) as totalIncome,
+            SUM(CASE WHEN d.dealType = 'SALE' THEN d.totalPrice ELSE 0 END) as saleIncome,
+            SUM(CASE WHEN d.dealType = 'RENT' THEN d.totalPrice ELSE 0 END) as rentIncome,
             SUM(CASE WHEN d.dealType = 'RENT' AND d.dealStatus = 'ACTIVE' THEN 1 ELSE 0 END) as activeRents
         FROM DealEntity d
             WHERE d.date >= coalesce(:from, d.date) 
